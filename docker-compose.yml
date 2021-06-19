@@ -2,7 +2,9 @@ version: '3.7'
 services:
   #carbon-mysql service
   carbon-mysql:
-#    build:  /mysql
+    build:
+      context: ../
+      dockerfile: carbon-docker/mysql/Dockerfile
     restart:  on-failure
     image:  carbonface/carbon-mysql
     container_name:  carbon-mysql
@@ -19,7 +21,9 @@ services:
       - /usr/local/CarbonCloud/database/mysql/db:/var/lib/mysql
   #carbon-redis service
   carbon-redis:
-#    build:  /redis
+    build:
+      context: ../
+      dockerfile: /carbon-docker/redis/Dockerfile
     restart: on-failure
     image: carbonface/carbon-redis
     container_name: carbon-redis
@@ -32,7 +36,9 @@ services:
       - /usr/local/CarbonCloud/database/redis:/data
   #carbon-mongo service
   carbon-mongo:
-#    build:  ./mongo
+    build:
+      context: ../
+      dockerfile: /carbon-docker/mongo/Dockerfile
     restart:  on-failure
     image: carbonface/carbon-mongo
     container_name: carbon-mongo
@@ -50,8 +56,8 @@ services:
       - /usr/local/CarbonCloud/database/mongo/log:/data/log
   carbon-eureka:
     build:
-      context: .
-      dockerfile: docker/carbon-eureka/Dockerfile
+      context: ../
+      dockerfile: carbon-docker/carbon-eureka/Dockerfile
       args:
         JAR_NAME: ./carbon-eureka-0.0.1-SNAPSHOT.jar
     restart: on-failure
@@ -70,8 +76,8 @@ services:
       - /usr/local/CarbonCloud/services/carbon-eureka:/carbon-eureka/logs
   carbon-gateway:
     build:
-      context: .
-      dockerfile: docker/carbon-gateway/Dockerfile
+      context: ../
+      dockerfile: carbon-docker/carbon-gateway/Dockerfile
       args:
         JAR_NAME: ./carbon-gateway-0.0.1-SNAPSHOT.jar
     depends_on:
@@ -92,8 +98,8 @@ services:
       - /usr/local/CarbonCloud/services/carbon-gateway:/carbon-gateway/logs
   carbon-user:
     build:
-      context: .
-      dockerfile: docker/carbon-user/Dockerfile
+      context: ../
+      dockerfile: carbon-docker/carbon-user/Dockerfile
       args:
         JAR_NAME: ./carbon-user-0.0.1-SNAPSHOT.jar
     depends_on:
@@ -124,7 +130,7 @@ services:
   carbonface:
     build:
       context: ../
-      dockerfile: docker/carbonface/Dockerfile
+      dockerfile: carbon-docker/carbonface/Dockerfile
       args:
         JAR_NAME: ./carbonface-0.0.1-SNAPSHOT.jar
     depends_on:
