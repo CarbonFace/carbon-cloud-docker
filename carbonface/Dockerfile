@@ -1,0 +1,16 @@
+##Dockerfile for carbon-cloud eureka server
+FROM carbonface/carbon-cloud-docker-base
+MAINTAINER CarbonFace<553127022@qq.com>
+
+ARG DEFAULT_VERSION=0.0.1-SNAPSHOT.jar
+ENV SERVICE_NAME                "carbonface"
+ARG WORK_DIR=/$SERVICE_NAME
+ARG LOG_DIR=$WORK_DIR/logs
+ARG JAR_NAME="$SERVICE_NAME-$DEFAULT_VERSION"
+ENV SERVICE_JAR=$JAR_NAME
+
+VOLUME $LOG_DIR
+WORKDIR $WORK_DIR
+
+COPY $JAR_NAME  $WORK_DIR/
+EXPOSE 8086

@@ -1,0 +1,156 @@
+version: '3.7'
+services:
+  #carbon-mysql service
+  carbon-mysql:
+#    build:  /mysql
+    restart:  on-failure
+    image:  carbonface/carbon-mysql
+    container_name:  carbon-mysql
+#    network_mode: host
+    #    networks:
+#      - carbon-cloud
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: Carbon@mysqlRoot7
+      TZ: Asia/shanghai
+    volumes:
+      - /usr/local/CarbonCloud/database/mysql/conf:/etc/mysql/conf.d
+      - /usr/local/CarbonCloud/database/mysql/db:/var/lib/mysql
+  #carbon-redis service
+  carbon-redis:
+#    build:  /redis
+    restart: on-failure
+    image: carbonface/carbon-redis
+    container_name: carbon-redis
+#    network_mode: host
+    #    networks:
+#      - carbon-cloud
+    ports:
+      - 6379:6379
+    volumes:
+      - /usr/local/CarbonCloud/database/redis:/data
+  #carbon-mongo service
+  carbon-mongo:
+#    build:  ./mongo
+    restart:  on-failure
+    image: carbonface/carbon-mongo
+    container_name: carbon-mongo
+#    network_mode: host
+    #    networks:
+#      - carbon-cloud
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Carbon@mongoRoot7
+    volumes:
+      - /usr/local/CarbonCloud/database/mongo/configdb:/data/configdb
+      - /usr/local/CarbonCloud/database/mongo/db:/data/db
+      - /usr/local/CarbonCloud/database/mongo/log:/data/log
+  carbon-eureka:
+    build:
+      context: .
+      dockerfile: docker/carbon-eureka/Dockerfile
+      args:
+        JAR_NAME: ./carbon-eureka-0.0.1-SNAPSHOT.jar
+    restart: on-failure
+    image: carbonface/carbon-eureka
+    container_name: carbon-eureka
+#    network_mode: host
+    #    networks:
+#      - carbon-cloud
+    ports:
+      - 8008:8008
+#    environment:
+#      TZ: Asian/Shanghai
+#      DEBUG: "true"
+    command: --carbon_cloud.eureka_address=carbon-eureka
+    volumes:
+      - /usr/local/CarbonCloud/services/carbon-eureka:/carbon-eureka/logs
+  carbon-gateway:
+    build:
+      context: .
+      dockerfile: docker/carbon-gateway/Dockerfile
+      args:
+        JAR_NAME: ./carbon-gateway-0.0.1-SNAPSHOT.jar
+    depends_on:
+      - carbon-eureka
+    restart: on-failure
+    image: carbonface/carbon-gateway
+    container_name: carbon-gateway
+#    network_mode: host
+    #    networks:
+#      - carbon-cloud
+    ports:
+      - 8080:8080
+#    environment:
+#      TZ: Asian/Shanghai
+#      DEBUG: "true"
+    command: --carbon_cloud.eureka_address=carbon-eureka
+    volumes:
+      - /usr/local/CarbonCloud/services/carbon-gateway:/carbon-gateway/logs
+  carbon-user:
+    build:
+      context: .
+      dockerfile: docker/carbon-user/Dockerfile
+      args:
+        JAR_NAME: ./carbon-user-0.0.1-SNAPSHOT.jar
+    depends_on:
+      - carbon-redis
+      - carbon-mysql
+      - carbon-mongo
+      - carbon-gateway
+    restart: on-failure
+    image: carbonface/carbon-user
+    container_name: carbon-user
+#    network_mode: host
+    #    networks:
+#      - carbon-cloud
+    ports:
+      - 8002:8002
+    environment:
+#      TZ: Asian/Shanghai
+#      DEBUG: "true"
+      SPRING_PROFILES_ACTIVE: dev
+    command:
+      - --carbon_cloud.eureka_address=carbon-eureka
+      - --carbon_cloud.mysql_address=carbon-mysql
+      - --carbon_cloud.redis_address=carbon-redis
+      - --carbon_cloud.mongo_address=carbon-mongo
+    volumes:
+      - /usr/local/CarbonCloud/services/carbon-user:/carbon-user/logs
+
+  carbonface:
+    build:
+      context: ../
+      dockerfile: docker/carbonface/Dockerfile
+      args:
+        JAR_NAME: ./carbonface-0.0.1-SNAPSHOT.jar
+    depends_on:
+      - carbon-redis
+      - carbon-mysql
+      - carbon-mongo
+      - carbon-gateway
+    restart: on-failure
+    image: carbonface/carbonface
+    container_name: carbonface
+#    network_mode: host
+#    networks:
+#      - carbon-cloud
+    ports:
+      - 8086:8086
+    environment:
+#      TZ: Asian/Shanghai
+#      DEBUG: "true"
+      SPRING_PROFILES_ACTIVE: dev
+    command:
+      - --carbon_cloud.eureka_address=carbon-eureka
+      - --carbon_cloud.mysql_address=carbon-mysql
+      - --carbon_cloud.redis_address=carbon-redis
+      - --carbon_cloud.mongo_address=carbon-mongo
+    volumes:
+      - /usr/local/CarbonCloud/services/carbonface:/carbonface/logs
+#networks:
+#  carbon-cloud:
+#    driver: host
