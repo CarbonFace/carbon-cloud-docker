@@ -17,8 +17,8 @@ services:
       MYSQL_ROOT_PASSWORD: Carbon@mysqlRoot7
       TZ: Asia/shanghai
     volumes:
-      - /usr/local/CarbonCloud/database/mysql/conf:/etc/mysql/conf.d
-      - /usr/local/CarbonCloud/database/mysql/db:/var/lib/mysql
+      - ~/CarbonCloud/database/mysql/conf:/etc/mysql/conf.d
+      - ~/CarbonCloud/database/mysql/db:/var/lib/mysql
   #carbon-redis service
   carbon-redis:
     build:
@@ -33,7 +33,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - /usr/local/CarbonCloud/database/redis:/data
+      - ~/CarbonCloud/database/redis:/data
   #carbon-mongo service
   carbon-mongo:
     build:
@@ -51,9 +51,9 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Carbon@mongoRoot7
     volumes:
-      - /usr/local/CarbonCloud/database/mongo/configdb:/data/configdb
-      - /usr/local/CarbonCloud/database/mongo/db:/data/db
-      - /usr/local/CarbonCloud/database/mongo/log:/data/log
+      - ~/CarbonCloud/database/mongo/configdb:/data/configdb
+      - ~/CarbonCloud/database/mongo/db:/data/db
+      - ~/CarbonCloud/database/mongo/log:/data/log
   carbon-eureka:
     build:
       context: ../
@@ -73,7 +73,7 @@ services:
 #      DEBUG: "true"
     command: --carbon_cloud.eureka_address=carbon-eureka
     volumes:
-      - /usr/local/CarbonCloud/services/carbon-eureka:/carbon-eureka/logs
+      - ~/CarbonCloud/services/carbon-eureka:/carbon-eureka/logs
   carbon-gateway:
     build:
       context: ../
@@ -95,7 +95,7 @@ services:
 #      DEBUG: "true"
     command: --carbon_cloud.eureka_address=carbon-eureka
     volumes:
-      - /usr/local/CarbonCloud/services/carbon-gateway:/carbon-gateway/logs
+      - ~/CarbonCloud/services/carbon-gateway:/carbon-gateway/logs
   carbon-user:
     build:
       context: ../
@@ -125,7 +125,7 @@ services:
       - --carbon_cloud.redis_address=carbon-redis
       - --carbon_cloud.mongo_address=carbon-mongo
     volumes:
-      - /usr/local/CarbonCloud/services/carbon-user:/carbon-user/logs
+      - ~/CarbonCloud/services/carbon-user:/carbon-user/logs
 
   carbonface:
     build:
@@ -156,7 +156,7 @@ services:
       - --carbon_cloud.redis_address=carbon-redis
       - --carbon_cloud.mongo_address=carbon-mongo
     volumes:
-      - /usr/local/CarbonCloud/services/carbonface:/carbonface/logs
+      - ~/CarbonCloud/services/carbonface:/carbonface/logs
 #networks:
 #  carbon-cloud:
 #    driver: host

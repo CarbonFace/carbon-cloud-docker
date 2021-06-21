@@ -4,5 +4,6 @@
 FROM redis
 MAINTAINER CarbonFace<553127022@qq.com>
 RUN mkdir /data/config /data/db
+VOLUME /data
 COPY ./redis.conf /data/config/
 CMD ["redis-server","/data/config/redis.conf"]
