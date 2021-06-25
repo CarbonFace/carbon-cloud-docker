@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -eo pipefail
 # logging functions
 log() {
@@ -30,7 +30,7 @@ init_service_user(){
   user_name="$1"
   group_name="$user_name"
   if ! id -u "$group_name" >/dev/null 2>&1; then
-    addgroup -S  "$group_name"
+    addgroup -S "$group_name"
   else
     warn "service user group $group_name already exits!"
   fi
@@ -48,7 +48,6 @@ init_work_dir(){
   check_work_dir_valid "$work_dir_name"
   note "system user create initializing started!"
   service_user_name="$work_dir_name"
-
   note "user and group name will be the same with work directory name: $work_dir_name as default!"
   init_service_user "$service_user_name"
   note "system user initialized! "

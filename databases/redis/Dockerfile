@@ -17,6 +17,8 @@
 
 FROM redis:6-alpine
 MAINTAINER CarbonFace<553127022@qq.com>
+ENV REDIS_REQUIREPASS   root
 RUN mkdir /data/conf /data/db
 COPY redis.conf /data/conf/
+RUN sed -i '/^requirepass/requirepass '$REDIS_REQUIREPASS'/' /data/conf/redis.conf
 CMD ["redis-server","/data/conf/redis.conf"]

@@ -30,6 +30,8 @@ services:
     #    network_mode: host
     #    networks:
     #      - carbon-cloud
+    environment:
+      REDIS_REQUIREPASS: Carbon@redisRoot7
     ports:
       - 6379:6379
     volumes:
@@ -74,6 +76,7 @@ services:
     command: --carbon_cloud.eureka_address=carbon-eureka
     volumes:
       - ~/CarbonCloud/services/carbon-eureka:/carbon-eureka/logs
+
   carbon-gateway:
     #    build:
     #      context: .

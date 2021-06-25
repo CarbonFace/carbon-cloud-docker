@@ -30,8 +30,12 @@ docker_config_load(){
 }
 init_local_directory(){
   local_base="$1"
-  if [ -z "$local_base" ]; then
+  if [ -z "$local_base" ];
+  then
+      note "local base directory is not defined. Use the default dir ~/CarbonCloud"
       local_base="$HOME/CarbonCloud"
+  else
+     note "local base directory is defined as $local_base"
   fi
   if [ -d "$local_base" ]; then
       note "Local base dir $local_base existed. Removing content of the $local_base ..."
@@ -57,8 +61,8 @@ init_local_directory(){
   cp ./databases/mysql/my.cnf "$local_base"/databases/mysql/conf/
 
   note "initializing mongo local dir..."
-  mkdir -p "$local_base/databases/mongo/configdb" "$local_base/databases/mongo/db" "$local_base/databases/mongo/log"
-  cp ./databases/mongo/mongod.conf "$local_base"/databases/mongo/configdb/
+  mkdir -p "$local_base/databases/mongo/conf" "$local_base/databases/mongo/db" "$local_base/databases/mongo/log"
+  cp ./databases/mongo/mongod.conf "$local_base"/databases/mongo/conf/
 
   note "initializing redis local dir..."
   mkdir -p "$local_base/databases/redis/conf" "$local_base/databases/redis/db"
