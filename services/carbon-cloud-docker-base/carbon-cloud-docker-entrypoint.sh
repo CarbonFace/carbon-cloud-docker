@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eo pipefail
 # logging functions
 log() {
@@ -53,8 +53,6 @@ init_work_dir(){
   init_service_user "$service_user_name"
   note "system user initialized! "
   note "user:group    $service_name:$service_name"
-
-#  mkdir -p /"$work_dir_name"
   chown -R "$service_user_name":"$service_user_name" /"$work_dir_name"
   chmod 1777 /"$work_dir_name"
 
@@ -88,7 +86,6 @@ _main() {
     init_work_dir "$work_dir_name"
     echo
     note "welcome to the Carbon Cloud!          have fun~ ^_^) "
-    ls -al
     echo java "$java_opts" $security_egd -jar "$service_jar"
     if [ "$debug" = "true" ]
     then

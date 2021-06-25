@@ -69,6 +69,7 @@ build(){
       if [ "$(check_pom "$docker_sign")" = 0 ]; then
           note "module $target_dir build docker plugin detected. docker build process initializing!"
           mvn clean package docker:build
+          note "docker image for $dir initialized!"
       fi
       cd ..
   fi
@@ -82,6 +83,6 @@ _main(){
   for dir in $dirs; do
     build "$dir"
   done
-  note "docker build initialized. Welcome to the Carbon Cloud! have fun~ ^_^)"
+  note "docker build finished. Welcome to the Carbon Cloud! have fun~ ^_^)"
 }
 _main
