@@ -28,16 +28,17 @@ check_work_dir_valid(){
 
 init_service_user(){
   user_name="$1"
+  work_dir_name="$2"
   group_name="$user_name"
   if ! id -u "$group_name" >/dev/null 2>&1; then
     addgroup -S "$group_name"
-  else
-    warn "service user group $group_name already exits!"
   fi
   if ! id -u "$user_name" >/dev/null 2>&1; then
     adduser -D -G "$user_name" "$user_name"
-  else
-    warn "service username $user_name already exits!"
+    note "system user initialized."
+    note "user:group $user_name:$group_name"
+    chown -R "$user_name":"$user_name" /"$work_dir_name"
+    chmod 1777 /"$work_dir_name"
   fi
 }
 
@@ -49,11 +50,7 @@ init_work_dir(){
   note "system user create initializing started!"
   service_user_name="$work_dir_name"
   note "user and group name will be the same with work directory name: $work_dir_name as default!"
-  init_service_user "$service_user_name"
-  note "system user initialized! "
-  note "user:group    $service_name:$service_name"
-  chown -R "$service_user_name":"$service_user_name" /"$work_dir_name"
-  chmod 1777 /"$work_dir_name"
+  init_service_user "$service_user_name" "$work_dir_name"
 
   note "work directory check done ! "
   note "work directory : /$work_dir_name"
